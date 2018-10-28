@@ -13,7 +13,7 @@ The game will tell you how to navigate windows
 TODO
 ------
 
-1. make sprites for ships and maybe shots
+
 2. make music and sounds
 3. add gamepad support
 4. make pause menu

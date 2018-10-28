@@ -1,10 +1,28 @@
 import random
 import pyxel
+import sqlite3 as sqlite
 
 pyxel.init(255, 255)
-
+# assets
 pyxel.load('resources.pyxel')
-startWave = [[128, 50], [50, 50], [32, 50], [64, 60]]
+# SQLITE CONTAINMENT AREA
+con = sqlite.connect('spaceShooter.sqlite3')
+cur = con.cursor()
+try:
+    cur.execute("SELECT * FROM highs")
+except sqlite.Error:
+    cur.execute("CREATE TABLE highs(id INTEGER PRIMARY KEY, high TEXT, value REAL)")
+    cur.execute("INSERT INTO Highs VALUES(1, 'Score', 0)")
+    cur.execute("INSERT INTO highs VALUES(2, 'Speed', 1.0)")
+    con.commit()
+finally:
+    cur.execute("SELECT * FROM highs")
+highs = cur.fetchall()
+con.close()
+
+# END SQLITE CONTAINMENT AREA
+# variables
+startWave = [[128, 50, 0], [50, 50, 1], [32, 50, 0], [64, 60, 1]]
 playerX = 125
 playerY = 200
 spawnCounter = 0
@@ -13,8 +31,8 @@ score = 0
 speedScore = 0
 lives = 3
 sessionHighSpeed = 1.0
-highScore = 0
-highSpeed = 1
+highScore = highs[0][2]
+highSpeed = highs[1][2]
 screen = "Start"
 textColor = 1
 textCounter = 0
@@ -28,7 +46,7 @@ def shoot():
 
 
 def spawn_enemy():
-    enemies.append([random.randint(0, 255), random.randint(0, 100)])
+    enemies.append([random.randint(0, 255), random.randint(0, 100), random.randint(0, 1)])
 
 
 def update():
@@ -48,6 +66,8 @@ def update():
     global screen
     global textColor
     global textCounter
+    global con
+    global cur
     if screen == "Game":
         # player input
         if pyxel.btn(pyxel.KEY_D):
@@ -97,8 +117,18 @@ def update():
                 if lives < 0:
                     lives = 0
                     if score > highScore:
+                        con = sqlite.connect("spaceShooter.sqlite3")
+                        cur = con.cursor()
+                        cur.execute("UPDATE highs SET value = " + str(score) + " WHERE id = 1")
+                        con.commit()
+                        con.close()
                         highScore = score
                     if sessionHighSpeed > highSpeed:
+                        con = sqlite.connect("spaceShooter.sqlite3")
+                        cur = con.cursor()
+                        cur.execute("UPDATE highs SET value = " + str(sessionHighSpeed) + " WHERE id = 2")
+                        con.commit()
+                        con.close()
                         highSpeed = sessionHighSpeed
                     screen = "Game Over"
                 speedScore -= 500
@@ -138,7 +168,10 @@ def draw():
             pyxel.line(x[0], x[1], x[0], x[1] + 7, 2)
         # enemies
         for enemy in enemies:
-            pyxel.blt(enemy[0], enemy[1], 0, 16, 0, 9, -10, 0)
+            if enemy[2] == 0:
+                pyxel.blt(enemy[0], enemy[1], 0, 16, 0, 10, -11, 0)
+            elif enemy[2] == 1:
+                pyxel.blt(enemy[0], enemy[1], 0, 32, 0, 9, -10, 0)
         # score
         pyxel.text(15, 230, "Score: " + str(score), 7)
 
