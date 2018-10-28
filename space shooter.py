@@ -1,6 +1,5 @@
 import random
 import pyxel
-import math
 
 pyxel.init(255, 255)
 
@@ -11,6 +10,9 @@ moveCounter = 0
 score = 0
 speedScore = 0
 lives = 3
+sessionHighSpeed = 1
+highScore = 0
+highSpeed = 1
 
 shots = []
 enemies = [[128, 50]]
@@ -34,6 +36,7 @@ def update():
     global enemies
     global score
     global lives
+    global sessionHighSpeed
     # player input
     if pyxel.btn(pyxel.KEY_D):
         playerX += 3
@@ -84,6 +87,9 @@ def update():
             speedScore -= 500
             if speedScore < 0:
                 speedScore = 0
+    # change session high speed
+    if sessionHighSpeed < speedScore / 500 + 1:
+        sessionHighSpeed = speedScore
 
 
 def draw():
