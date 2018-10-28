@@ -7,6 +7,9 @@ playerX = 125
 playerY = 200
 spawnCounter = 0
 moveCounter = 0
+score = 0
+lives = 3
+
 shots = []
 enemies = [[128, 50]]
 
@@ -26,6 +29,7 @@ def update():
     global spawnCounter
     global moveCounter
     global enemies
+    global score
     # player input
     if pyxel.btn(pyxel.KEY_D):
         playerX += 3
@@ -55,6 +59,14 @@ def update():
                 enemy[0] = 255
             if enemy[0] <= 0:
                 enemy[0] = 0
+    # collision detection
+    for enemy in enemies:
+        for shot in shots:
+            if enemy[0] + 3 >= shot[0] >= enemy[0] - 3:
+                if enemy[1] + 3 >= shot[1] >= enemy[1] - 3:
+                    shots.remove(shot)
+                    enemies.remove(enemy)
+                    score += 50
 
 
 def draw():
