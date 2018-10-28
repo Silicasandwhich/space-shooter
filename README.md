@@ -1,5 +1,20 @@
 # space shooter
 
+Dependencies
+-------------
+- pyxel
+
+    if you don't have pyxel, just run
+    ``
+    pip install pyxel
+    ``
+    as it has no dependencies
+
+- sqlite3 (I'm on version 3.21.0 if it matters)
+
+
+
+
 how to play
 -------------
 
