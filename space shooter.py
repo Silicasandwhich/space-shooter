@@ -3,6 +3,7 @@ import pyxel
 
 pyxel.init(255, 255)
 
+startWave = [[128, 50], [50, 50], [32, 50], [64, 60]]
 playerX = 125
 playerY = 200
 spawnCounter = 0
@@ -13,10 +14,12 @@ lives = 3
 sessionHighSpeed = 1
 highScore = 0
 highSpeed = 1
-screen = "Game"
+screen = "Start"
+textColor = 1
+textCounter = 0
 
 shots = []
-enemies = [[128, 50]]
+enemies = startWave
 
 
 def shoot():
@@ -29,6 +32,7 @@ def spawn_enemy():
 
 def update():
     # globals
+    global playerY
     global highScore
     global highSpeed
     global speedScore
@@ -41,6 +45,8 @@ def update():
     global lives
     global sessionHighSpeed
     global screen
+    global textColor
+    global textCounter
     if screen == "Game":
         # player input
         if pyxel.btn(pyxel.KEY_D):
@@ -70,9 +76,9 @@ def update():
                 enemy[0] += random.randint(-30, 30)
                 enemy[1] += 10
                 if enemy[0] >= 255:
-                    enemy[0] = 255
+                    enemy[0] = 230
                 if enemy[0] <= 0:
-                    enemy[0] = 0
+                    enemy[0] = 30
         # collision detection
         for enemy in enemies:
             for shot in shots:
@@ -103,6 +109,22 @@ def update():
     elif screen == "Game Over":
         if pyxel.btnp(pyxel.KEY_Z):
             screen = "Start"
+    elif screen == "Start":
+        textCounter += 1
+        if textCounter % 30 == 0:
+            textColor = random.randint(1, 12)
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            playerX = 125
+            playerY = 200
+            spawnCounter = 0
+            moveCounter = 0
+            score = 0
+            speedScore = 0
+            lives = 3
+            sessionHighSpeed = 1
+            shots = []
+            enemies = startWave
+            screen = "Game"
 
 
 def draw():
@@ -131,6 +153,11 @@ def draw():
         pyxel.text(175, 78, "High: " + str(highScore), 7)
         pyxel.text(75, 140, "Speed: " + str(sessionHighSpeed) + 'x', 7)
         pyxel.text(175, 140, "High: " + str(highSpeed) + 'x', 7)
+        pyxel.text(120, 200, "Press 'Z' to continue")
+    if screen == "Start":
+        pyxel.cls(0)
+        pyxel.text(107, 100, "SPACE SHOOTER", textColor)
+        pyxel.text(105, 175, "Space To Start", round(textColor+15/2))
 
 
 pyxel.run(update, draw)
