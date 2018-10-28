@@ -3,6 +3,7 @@ import pyxel
 
 pyxel.init(255, 255)
 
+pyxel.load('resources.pyxel')
 startWave = [[128, 50], [50, 50], [32, 50], [64, 60]]
 playerX = 125
 playerY = 200
@@ -11,7 +12,7 @@ moveCounter = 0
 score = 0
 speedScore = 0
 lives = 3
-sessionHighSpeed = 1
+sessionHighSpeed = 1.0
 highScore = 0
 highSpeed = 1
 screen = "Start"
@@ -23,7 +24,7 @@ enemies = startWave
 
 
 def shoot():
-    shots.append([playerX, playerY-15])
+    shots.append([playerX+5, playerY-15])
 
 
 def spawn_enemy():
@@ -82,8 +83,8 @@ def update():
         # collision detection
         for enemy in enemies:
             for shot in shots:
-                if enemy[0] + 4 >= shot[0] >= enemy[0] - 4:
-                    if enemy[1] + 4 >= shot[1] >= enemy[1] - 4:
+                if enemy[0] + 9 >= shot[0] >= enemy[0] - 9:
+                    if enemy[1] + 5 >= shot[1] >= enemy[1] - 5:
                         shots.remove(shot)
                         enemies.remove(enemy)
                         score += 50
@@ -104,8 +105,8 @@ def update():
                 if speedScore < 0:
                     speedScore = 0
         # change session high speed
-        if sessionHighSpeed < speedScore / 500 + 1:
-            sessionHighSpeed = speedScore
+        if sessionHighSpeed < round(speedScore / 500.0 + 1, 2):
+            sessionHighSpeed = round(speedScore / 500 + 1, 2)
     elif screen == "Game Over":
         if pyxel.btnp(pyxel.KEY_Z):
             screen = "Start"
@@ -131,13 +132,13 @@ def draw():
     if screen == "Game":
         pyxel.cls(0)
         # player
-        pyxel.circ(playerX, playerY, 5, 3)
+        pyxel.blt(playerX, playerY, 0, 0, 0, 11, 11, 0)
         # shots
         for x in shots:
             pyxel.line(x[0], x[1], x[0], x[1] + 7, 2)
         # enemies
         for enemy in enemies:
-            pyxel.circ(enemy[0], enemy[1], 3, 7)
+            pyxel.blt(enemy[0], enemy[1], 0, 16, 0, 9, -10, 0)
         # score
         pyxel.text(15, 230, "Score: " + str(score), 7)
 
