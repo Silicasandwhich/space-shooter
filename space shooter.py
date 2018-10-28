@@ -1,5 +1,5 @@
-import pyxel
 import random
+import pyxel
 
 pyxel.init(255, 255)
 
@@ -30,6 +30,7 @@ def update():
     global moveCounter
     global enemies
     global score
+    global lives
     # player input
     if pyxel.btn(pyxel.KEY_D):
         playerX += 3
@@ -46,12 +47,14 @@ def update():
     for x in shots:
         x[1] -= 5
     # spawn enemies
-    spawnCounter += 1
-    if spawnCounter % 100 == 0:
+    spawnCounter += score / 500 + 1
+    if spawnCounter >= 100:
+        spawnCounter = 0
         spawn_enemy()
     # move enemies
-    moveCounter += 1
-    if moveCounter % 50 == 0:
+    moveCounter += score / 500 + 1
+    if moveCounter >= 50:
+        moveCounter = 0
         for enemy in enemies:
             enemy[0] += random.randint(-30, 30)
             enemy[1] += 10
@@ -62,11 +65,19 @@ def update():
     # collision detection
     for enemy in enemies:
         for shot in shots:
-            if enemy[0] + 3 >= shot[0] >= enemy[0] - 3:
-                if enemy[1] + 3 >= shot[1] >= enemy[1] - 3:
+            if enemy[0] + 4 >= shot[0] >= enemy[0] - 4:
+                if enemy[1] + 4 >= shot[1] >= enemy[1] - 4:
                     shots.remove(shot)
                     enemies.remove(enemy)
                     score += 50
+    # lose a life if an enemy passes the player
+    for enemy in enemies:
+        if enemy[1] >= 200:
+            enemies.remove(enemy)
+            lives -= 1
+            score -= 500
+            if score < 0:
+                score = 0
 
 
 def draw():
