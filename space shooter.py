@@ -153,7 +153,7 @@ def draw():
         pyxel.text(175, 78, "High: " + str(highScore), 7)
         pyxel.text(75, 140, "Speed: " + str(sessionHighSpeed) + 'x', 7)
         pyxel.text(175, 140, "High: " + str(highSpeed) + 'x', 7)
-        pyxel.text(120, 200, "Press 'Z' to continue")
+        pyxel.text(120, 200, "Press 'Z' to continue", 7)
     if screen == "Start":
         pyxel.cls(0)
         pyxel.text(107, 100, "SPACE SHOOTER", textColor)
