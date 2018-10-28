@@ -1,6 +1,6 @@
 # space shooter
 
-- how to play
+how to play
 -------------
 
 The game will tell you how to navigate windows
@@ -10,7 +10,7 @@ The game will tell you how to navigate windows
 - move: A and D
 
 
-- TODO
+TODO
 ------
 
 1. make sprites for ships and maybe shots
