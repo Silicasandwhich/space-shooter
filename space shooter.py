@@ -1,15 +1,22 @@
 import pyxel
+import random
 
 pyxel.init(255, 255)
 
 playerX = 125
 playerY = 200
 spawnCounter = 0
+moveCounter = 0
 shots = []
+enemies = [[128, 50]]
 
 
 def shoot():
     shots.append([playerX, playerY-15])
+
+
+def spawn_enemy():
+    enemies.append([random.randint(0, 255), random.randint(0, 100)])
 
 
 def update():
@@ -17,6 +24,8 @@ def update():
     global playerX
     global shots
     global spawnCounter
+    global moveCounter
+    global enemies
     # player input
     if pyxel.btn(pyxel.KEY_D):
         playerX += 3
@@ -32,6 +41,20 @@ def update():
     # moving shots
     for x in shots:
         x[1] -= 5
+    # spawn enemies
+    spawnCounter += 1
+    if spawnCounter % 100 == 0:
+        spawn_enemy()
+    # move enemies
+    moveCounter += 1
+    if moveCounter % 50 == 0:
+        for enemy in enemies:
+            enemy[0] += random.randint(-30, 30)
+            enemy[1] += 10
+            if enemy[0] >= 255:
+                enemy[0] = 255
+            if enemy[0] <= 0:
+                enemy[0] = 0
 
 
 def draw():
@@ -41,6 +64,9 @@ def draw():
     # shots
     for x in shots:
         pyxel.line(x[0], x[1], x[0], x[1] + 7, 2)
+    # enemies
+    for enemy in enemies:
+        pyxel.circ(enemy[0], enemy[1], 3, 7)
 
 
 pyxel.run(update, draw)
